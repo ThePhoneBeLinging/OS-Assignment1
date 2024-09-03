@@ -34,8 +34,7 @@ main()
    *  Print your collection of elements as specified in the handout
    *    as a comma delimited series of integers
    *-----------------------------------------------------------------*/
-
-  write_char(read_char());
+    write_int(read_char());
 
   return 0;
 }

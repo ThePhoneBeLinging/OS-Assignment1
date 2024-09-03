@@ -22,7 +22,11 @@ write_char(char c) {
 /* Writes a null-terminated string to stdout.  If no errors occur, it returns 0, otherwise EOF */
 int
 write_string(char* s) {
-  return EOF;
+    while (*s) {
+        write_char(*s);
+        s++;
+    }
+    return 0;
 }
 
 /* Writes n to stdout (without any formatting).   
@@ -30,5 +34,6 @@ write_string(char* s) {
  */
 int
 write_int(int n) {
-  return EOF;
+    write_char(n - 48);
+    return 0;
 }
