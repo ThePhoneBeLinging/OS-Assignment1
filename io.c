@@ -7,13 +7,16 @@
 /* Reads next char from stdin. If no more characters, it returns EOF */
 int
 read_char() {
-  return EOF;
+    int c;
+    read(0, &c, 1);
+    return c;
 }
 
 /* Writes c to stdout.  If no errors occur, it returns 0, otherwise EOF */
 int
 write_char(char c) {
-  return EOF;
+    write(1, &c, 1);
+    return 0;
 }
 
 /* Writes a null-terminated string to stdout.  If no errors occur, it returns 0, otherwise EOF */
