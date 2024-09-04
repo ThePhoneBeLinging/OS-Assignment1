@@ -34,6 +34,6 @@ write_string(char* s) {
  */
 int
 write_int(int n) {
-    write_char(n - 48);
+    write_char(n + 48);
     return 0;
 }
