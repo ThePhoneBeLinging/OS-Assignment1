@@ -41,6 +41,13 @@ write_int(int n) {
     char stringOfInt[12];
     int numberOfDigits = 0;
 
+    if (n == 0) {
+        if (write_char('0') == EOF) {
+            return EOF;
+        }
+        return 0;
+    }
+
     if (n < 0) {
         write_char('-');
         n = -n;
