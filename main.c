@@ -1,7 +1,7 @@
 
 /* You are not allowed to use <stdio.h> */
 #include "io.h"
-#include <stdio.h>
+#include <stdlib.h>
 
 
 /**
@@ -16,6 +16,82 @@
 int
 main()
 {
+    typedef struct value {
+        int val;
+        struct value *next;
+        struct value *prev;
+    } value;
+
+    typedef struct Collection {
+        value *head;
+        value *tail;
+        int count;
+    } Collection;
+
+    char c;
+    Collection *collection = malloc(sizeof(Collection));
+    collection->head = NULL;
+    collection->tail = NULL;
+    collection->count = 0;
+
+    while (1) {
+        c = read_char();
+
+        if (c < 0) {
+            break;
+        } else if(c == 'a') {
+            value *newVal = malloc(sizeof(value));
+            newVal->val = collection->count;
+            newVal->next = NULL;
+
+            if (collection->head == NULL) {
+                collection->head = newVal;
+                collection->tail = newVal;
+            } else {
+                newVal->prev = collection->tail;
+                collection->tail->next = newVal;
+                collection->tail = newVal;
+            }
+            collection->count++;
+        } else if (c == 'b') {
+            collection->count++;
+        } else if (c == 'c') {
+            if (collection->tail != NULL) {
+                if (collection->tail == collection->head) {
+                    free(collection->tail);
+                    collection->head = NULL;
+                    collection->tail = NULL;
+                } else {
+                    value *temp = collection->tail;
+                    collection->tail = collection->tail->prev;
+                    collection->tail->next = NULL;
+                    free(temp);
+                }
+            }
+            collection->count++;
+        } else {
+            break;
+        }
+    }
+
+    value *temp = collection->head;
+    while (temp != NULL) {
+        write_int(temp->val);
+        if (temp->next != NULL) {
+            write_char(',');
+        }
+        temp = temp->next;
+    }
+    write_char(';');
+
+    value *current;
+    while (collection->head != NULL) {
+        current = collection->head;
+        collection->head = collection->head->next;
+        free(current);
+    }
+
+    free(collection);
   /*-----------------------------------------------------------------
    *TODO:  You need to implement the command line driver here as
    *       specified in the assignment handout.
@@ -34,10 +110,6 @@ main()
    *  Print your collection of elements as specified in the handout
    *    as a comma delimited series of integers
    *-----------------------------------------------------------------*/
-  char c;
-  c = read_char();
-  write_char(c);
-
 
   return 0;
 }
