@@ -3,6 +3,27 @@
 #include "io.h"
 #include <stdlib.h>
 
+typedef struct value {
+    int val;
+    struct value *next;
+    struct value *prev;
+} value;
+
+typedef struct Collection {
+    value *head;
+    value *tail;
+    int count;
+} Collection;
+
+void freeCollection(Collection *collection) {
+    value *current;
+    while (collection->head != NULL) {
+        current = collection->head;
+        collection->head = collection->head->next;
+        free(current);
+    }
+    free(collection);
+}
 
 /**
  * @name  main
@@ -16,18 +37,6 @@
 int
 main()
 {
-    typedef struct value {
-        int val;
-        struct value *next;
-        struct value *prev;
-    } value;
-
-    typedef struct Collection {
-        value *head;
-        value *tail;
-        int count;
-    } Collection;
-
     char c;
     Collection *collection = malloc(sizeof(Collection));
     collection->head = NULL;
@@ -84,14 +93,7 @@ main()
     }
     write_char(';');
 
-    value *current;
-    while (collection->head != NULL) {
-        current = collection->head;
-        collection->head = collection->head->next;
-        free(current);
-    }
-
-    free(collection);
+    freeCollection(collection);
   /*-----------------------------------------------------------------
    *TODO:  You need to implement the command line driver here as
    *       specified in the assignment handout.
