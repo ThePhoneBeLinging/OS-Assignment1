@@ -107,6 +107,6 @@ main()
     write_char('\n');
 
     freeCollection(collection);
-    while (read_char() != EOF)
+    while (read_char() != EOF){}
   return 0;
 }
