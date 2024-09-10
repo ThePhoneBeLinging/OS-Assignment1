@@ -95,6 +95,10 @@ main()
         break;
     }
 
+    while (c != '\n' && c != EOF) {
+        c = read_char(); 
+    }
+
     value *temp = collection->head;
     while (temp != NULL) {
         write_int(temp->val);
@@ -107,6 +111,5 @@ main()
     write_char('\n');
 
     freeCollection(collection);
-    while (read_char() != EOF){}
   return 0;
 }
