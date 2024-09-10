@@ -46,41 +46,53 @@ main()
     while (1) {
         c = read_char();
 
-        if (c < 0) {
-            break;
-        } else if(c == 'a') {
-            value *newVal = malloc(sizeof(value));
-            newVal->val = collection->count;
-            newVal->next = NULL;
+        switch (c)
+        {
+            case 'a':
+                {
+                    value *newVal = malloc(sizeof(value));
+                    newVal->val = collection->count;
+                    newVal->next = NULL;
 
-            if (collection->head == NULL) {
-                collection->head = newVal;
-                collection->tail = newVal;
-            } else {
-                newVal->prev = collection->tail;
-                collection->tail->next = newVal;
-                collection->tail = newVal;
-            }
-            collection->count++;
-        } else if (c == 'b') {
-            collection->count++;
-        } else if (c == 'c') {
-            if (collection->tail != NULL) {
-                if (collection->tail == collection->head) {
-                    free(collection->tail);
-                    collection->head = NULL;
-                    collection->tail = NULL;
-                } else {
-                    value *temp = collection->tail;
-                    collection->tail = collection->tail->prev;
-                    collection->tail->next = NULL;
-                    free(temp);
+                    if (collection->head == NULL) {
+                        collection->head = newVal;
+                        collection->tail = newVal;
+                    } else {
+                        newVal->prev = collection->tail;
+                        collection->tail->next = newVal;
+                        collection->tail = newVal;
+                    }
+                    collection->count++;
+                    continue;
                 }
-            }
-            collection->count++;
-        } else {
-            break;
+            case 'b':
+                {
+                    collection->count++;
+                    continue;
+                }
+            case 'c':
+                {
+                    if (collection->tail != NULL) {
+                        if (collection->tail == collection->head) {
+                            free(collection->tail);
+                            collection->head = NULL;
+                            collection->tail = NULL;
+                        } else {
+                            value *temp = collection->tail;
+                            collection->tail = collection->tail->prev;
+                            collection->tail->next = NULL;
+                            free(temp);
+                        }
+                    }
+                    collection->count++;
+                    continue;
+                }
+                default:
+                {
+                    break;
+                }
         }
+        break;
     }
 
     value *temp = collection->head;
@@ -92,6 +104,7 @@ main()
         temp = temp->next;
     }
     write_char(';');
+    write_char('\n');
 
     freeCollection(collection);
   /*-----------------------------------------------------------------
