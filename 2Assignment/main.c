@@ -34,8 +34,7 @@ void freeCollection(Collection *collection) {
  * Then it has a place for you to implementation the command 
  * interpreter as  specified in the handout.
  */
-int
-main()
+int main()
 {
     char c;
     Collection *collection = malloc(sizeof(Collection));
@@ -43,7 +42,8 @@ main()
     collection->tail = NULL;
     collection->count = 0;
 
-    while (1) {
+    while (1)
+    {
         c = read_char();
 
         switch (c)
@@ -95,14 +95,17 @@ main()
         break;
     }
 
-    while (c != '\n' && c != EOF) {
+    while (c != '\n' && c != EOF)
+    {
         c = read_char(); 
     }
 
     value *temp = collection->head;
-    while (temp != NULL) {
+    while (temp != NULL)
+    {
         write_int(temp->val);
-        if (temp->next != NULL) {
+        if (temp->next != NULL)
+        {
             write_char(',');
         }
         temp = temp->next;
@@ -111,5 +114,5 @@ main()
     write_char('\n');
 
     freeCollection(collection);
-  return 0;
+    return 0;
 }
