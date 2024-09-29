@@ -2,8 +2,11 @@ CC = gcc
 
 CCWARNINGS = -W -Wall -Wno-unused-parameter -Wno-unused-variable
 CCOPTS     = -std=c11 -g -O0
+PKGFLAG = $(shell pkg-config --cflags check)
+CFLAGS = $(CCWARNINGS) $(CCOPTS) $(PKGFLAG)
 
-CFLAGS = $(CCWARNINGS) $(CCOPTS)
+LDFLAGS = $(shell pkg-config --libs check)
+
 
 TEST_SOURCES := test_mm.c mm.c memory_setup.c
 TEST_OBJECTS := $(TEST_SOURCES:.c=.o)
@@ -26,13 +29,13 @@ all: $(TEST_EXECUTABLE) $(CHECK_EXECUTABLE) $(APP_EXECUTABLE)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(TEST_EXECUTABLE): $(TEST_OBJECTS)
-	$(CC) $(CFLAGS) $(TEST_OBJECTS) -o $@ 
+	$(CC) $(CFLAGS) $(TEST_OBJECTS) -o $@ $(LDFLAGS)
 
 $(CHECK_EXECUTABLE): $(CHECK_OBJECTS)
-	$(CC) $(CFLAGS) $(CHECK_OBJECTS) -o $@ -lcheck -lsubunit -lm
+	$(CC) $(CFLAGS) $(CHECK_OBJECTS) -o $@ $(LDFLAGS)
 
 $(APP_EXECUTABLE): $(APP_OBJECTS)
-	$(CC) $(CFLAGS) $(APP_OBJECTS) -o $@
+	$(CC) $(CFLAGS) $(APP_OBJECTS) -o $@ $(LDFLAGS)
 
 run: $(APP_EXECUTABLE)
 	./$(APP_EXECUTABLE)

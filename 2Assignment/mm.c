@@ -19,10 +19,10 @@ typedef struct header {
 } BlockHeader;
 
 /* Macros to handle the free flag at bit 0 of the next pointer of header pointed at by p */
-#define GET_NEXT(p)    (void *) (((uintptr_t) p->next) & ~1)    /* MAYBE DONE TODO: Mask out free flag */
+#define GET_NEXT(p)    (void *) (((uintptr_t) p->next) & ~1)    /* NOT DONE TODO: Mask out free flag */
 #define SET_NEXT(p, n)  p->next = (void *)(((uintptr_t)(n) & ~1) | ((uintptr_t)GET_FREE(p))) /* TODO: Preserve free flag */
 #define GET_FREE(p)    (uint8_t) ( (uintptr_t) (p->next) & 0x1 )   /* OK -- do not change */
-#define SET_FREE(p, f)  p->next = (void *)(((uintptr_t)GET_NEXT(p)) | ((uintptr_t)f)) /* MAYBE DONE TODO: Set free bit of p->next to f */
+#define SET_FREE(p, f) p->next = (void *)(((uintptr_t)GET_NEXT(p) & ~1) | ((uintptr_t)(f & 1)))
 #define SIZE(p)        (size_t) ((uintptr_t)GET_NEXT(p) - (uintptr_t)p) /* MAYBE DONE TODO: Calc size of block from p and p->next */
 
 #define MIN_SIZE     (8)   // A block should have at least 8 bytes available for the user
@@ -51,6 +51,7 @@ void simple_init() {
             SET_FREE(first, 0);
             SET_NEXT(first, last);
             SET_FREE(last, 1);
+            current = first;
         }
     }
 }
@@ -75,27 +76,36 @@ void *simple_malloc(size_t size) {
     size_t aligned_size = size + (size % 8);
 
     /* Search for a free block */
-    BlockHeader *search_start = current;
+    BlockHeader* startSearch = current;
     do {
         if (GET_FREE(current)) {
 
             /* Possibly coalesce consecutive free blocks here */
 
             /* Check if free block is large enough */
-            if (SIZE(current) >= aligned_size) {
+            if (SIZE(current) >= aligned_size)
+            {
                 /* Will the remainder be large enough for a new block? */
-                if (SIZE(current) - aligned_size < sizeof(BlockHeader) + MIN_SIZE) {
-                    /* TODO: Use block as is, marking it non-free*/
-                } else {
-                    /* TODO: Carve aligned_size from block and allocate new free block for the rest */
+                if (SIZE(current) - aligned_size < sizeof(BlockHeader) + MIN_SIZE)
+                {
+                    SET_FREE(current,1);
                 }
-
-                return (void *) NULL; /* TODO: Return address of current's user_block and advance current */
+                else
+                {
+                    BlockHeader* newBlock = (BlockHeader*)((uintptr_t)current + aligned_size);
+                    SET_NEXT(newBlock, current->next);
+                    SET_NEXT(current, newBlock);
+                    SET_FREE(current,1);
+                    SET_FREE(newBlock,0);
+                }
+                void* currentAddress = current;
+                current = GET_NEXT(current);
+                return currentAddress;
             }
         }
 
         current = GET_NEXT(current);
-    } while (current != search_start);
+    } while (current != startSearch);
 
     /* None found */
     return NULL;
