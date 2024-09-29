@@ -8,7 +8,7 @@
 
 #include <stdint.h>
 
-#include "mm.h"
+#include "../../../../../../Downloads/assignment_2a/mm.h"
 
 
 
@@ -63,51 +63,41 @@ void simple_init() {
  * @retval Pointer to the start of the allocated memory or NULL if not possible.
  *
  */
-void* simple_malloc(size_t size)
-{
+void* simple_malloc(size_t size) {
   
-    if (first == NULL)
-    {
-        simple_init();
-        if (first == NULL)
-        {
-            return NULL;
+  if (first == NULL) {
+    simple_init();
+    if (first == NULL) return NULL;
+  }
+
+  size_t aligned_size = size;  /* TODO: Alignment */
+
+  /* Search for a free block */
+  BlockHeader * search_start = current;
+  do {
+ 
+    if (GET_FREE(current)) {
+
+      /* Possibly coalesce consecutive free blocks here */
+
+      /* Check if free block is large enough */
+      if (SIZE(current) >= aligned_size) {
+        /* Will the remainder be large enough for a new block? */
+        if (SIZE(current) - aligned_size < sizeof(BlockHeader) + MIN_SIZE) {
+          /* TODO: Use block as is, marking it non-free*/
+        } else {
+          /* TODO: Carve aligned_size from block and allocate new free block for the rest */
         }
+        
+        return (void *) NULL; /* TODO: Return address of current's user_block and advance current */
+      }
     }
 
-    size_t aligned_size = size;  /* TODO: Alignment */
+    current = GET_NEXT(current);
+  } while (current != search_start);
 
-    /* Search for a free block */
-    BlockHeader * search_start = current;
-    do {
-
-        if (GET_FREE(current))
-        {
-
-            /* Possibly coalesce consecutive free blocks here */
-
-            /* Check if free block is large enough */
-            if (SIZE(current) >= aligned_size)
-            {
-                /* Will the remainder be large enough for a new block? */
-                if (SIZE(current) - aligned_size < sizeof(BlockHeader) + MIN_SIZE)
-                {
-                    /* TODO: Use block as is, marking it non-free*/
-                }
-                else
-                {
-                    /* TODO: Carve aligned_size from block and allocate new free block for the rest */
-                }
-
-                return (void *) NULL; /* TODO: Return address of current's user_block and advance current */
-            }
-        }
-
-        current = GET_NEXT(current);
-    } while (current != search_start);
-
-   /* None found */
-    return NULL;
+ /* None found */
+  return NULL;
 }
 
 
@@ -120,18 +110,19 @@ void* simple_malloc(size_t size)
  * @param void *ptr Pointer to the memory to free.
  *
  */
-void simple_free(void * ptr)
-{
-    BlockHeader * block = NULL; /* TODO: Find block corresponding to ptr */
-    if (GET_FREE(block))
-    {
-        /* Block is not in use -- probably an error */
-        return;
-    }
+void simple_free(void * ptr) {
+  BlockHeader * block = NULL; /* TODO: Find block corresponding to ptr */
+  if (GET_FREE(block)) {
+    /* Block is not in use -- probably an error */
+    return;
+  }
 
-    /* TODO: Free block */
+  /* TODO: Free block */
 
-    /* Possibly coalesce consecutive free blocks here */
+  /* Possibly coalesce consecutive free blocks here */
 }
 
 
+/* Include test routines */
+
+#include "mm_aux.c"

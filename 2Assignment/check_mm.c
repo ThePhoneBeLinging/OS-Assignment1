@@ -20,7 +20,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <check.h>
-#include "mm.h"
+#include "../../../../../../Downloads/assignment_2a/mm.h"
 
 /* Choose which malloc/free to test */
 #define MALLOC simple_malloc
