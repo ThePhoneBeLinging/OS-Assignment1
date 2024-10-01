@@ -3,7 +3,7 @@
  * @Author 02335 team
  * @date   September, 2024
  * @brief  Memory management skeleton.
- * 
+ *
  */
 
 #include <stdint.h>
@@ -50,9 +50,10 @@ void simple_init() {
             last = (BlockHeader *) aligned_memory_end;
             SET_FREE(first, 0);
             SET_NEXT(first, last);
-            SET_NEXT(last,first);
+            SET_NEXT(last, first);
             SET_FREE(last, 0);
             current = first;
+            printf("First Memory address: %llu\n", first);
         }
     }
 }
@@ -62,7 +63,7 @@ void simple_init() {
  * @name    simple_malloc
  * @brief   Allocate at least size contiguous bytes of memory and return a pointer to the first byte.
  *
- * This function should behave similar to a normal malloc implementation. 
+ * This function should behave similar to a normal malloc implementation.
  *
  * @param size_t size Number of bytes to allocate.
  * @retval Pointer to the start of the allocated memory or NULL if not possible.
@@ -77,34 +78,36 @@ void *simple_malloc(size_t size) {
     size_t aligned_size = size + (size % 8);
 
     /* Search for a free block */
-    BlockHeader* startSearch = current;
+    BlockHeader *startSearch = current;
     do {
-
-        if (GET_FREE(current))
-        {
+        printf("Current: %llu\n", (uintptr_t) current);
+        if (GET_FREE(current)) {
             /* Possibly coalesce consecutive free blocks here */
 
             /* Check if free block is large enough */
-            if (SIZE(current) >= aligned_size)
-            {
+            printf("aligned_size: %lu\n", aligned_size);
+            printf("SIZE(current): %lu\n", SIZE(current));
+            if (SIZE(current) >= aligned_size) {
+                printf("entered if(SIZE(current)\n");
                 /* Will the remainder be large enough for a new block? */
-                if (SIZE(current) - aligned_size < sizeof(BlockHeader) + MIN_SIZE)
-                {
-                    SET_FREE(current,1);
-                }
-                else
-                {
-                    BlockHeader* newBlock = (BlockHeader*)((uintptr_t)current + aligned_size);
+                if (SIZE(current) - aligned_size < sizeof(BlockHeader) + MIN_SIZE) {
+                    SET_FREE(current, 1);
+                } else {
+                    BlockHeader *newBlock = (BlockHeader *) ((uintptr_t) current + aligned_size);
                     SET_NEXT(newBlock, current->next);
                     SET_NEXT(current, newBlock);
-                    SET_FREE(current,1);
-                    SET_FREE(newBlock,0);
+                    SET_FREE(current, 1);
+                    SET_FREE(newBlock, 0);
                 }
-                void* currentAddress = current;
+                void *currentAddress = current + (uintptr_t) sizeof(BlockHeader);
+                printf("Returning Address: %lu", currentAddress);
                 current = GET_NEXT(current);
                 return currentAddress;
             }
         }
+        printf("WAWAWAAWA\n");
+
+
         current = GET_NEXT(current);
     } while (current != startSearch);
     /* None found */
@@ -116,17 +119,32 @@ void *simple_malloc(size_t size) {
  * @name    simple_free
  * @brief   Frees previously allocated memory and makes it available for subsequent calls to simple_malloc
  *
- * This function should behave similar to a normal free implementation. 
+ * This function should behave similar to a normal free implementation.
  *
  * @param void *ptr Pointer to the memory to free.
  *
  */
 void simple_free(void *ptr) {
-    BlockHeader *block = NULL; /* TODO: Find block corresponding to ptr */
+    printf("Entered simple_free\n");
+    printf("Start Memory: %lu\n", memory_start);
+    printf("End Memory: %lu\n", memory_end);
+    printf("ptr: %lu\n", ptr);
+    BlockHeader *block = (BlockHeader *) ((uintptr_t) (ptr - sizeof(BlockHeader)));
+    printf("Block: %lu\n", block);
     if (GET_FREE(block)) {
+        printf("Block is not in use -- probably an error\n");
         /* Block is not in use -- probably an error */
         return;
     }
+    printf("About to BIG NICK crash\n");
+    BlockHeader *temp = block->next;
+    printf("Entering while\n");
+    while (temp->next != block) {
+        printf("temp.next\n");
+        temp = temp->next;
+    }
+    temp->next = block->next;
+    SET_FREE(temp, 0);
 
     /* TODO: Free block */
 
