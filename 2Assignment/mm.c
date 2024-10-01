@@ -10,8 +10,6 @@
 
 #include "mm.h"
 
-#include <stdbool.h>
-
 
 /* Proposed data structure elements */
 
