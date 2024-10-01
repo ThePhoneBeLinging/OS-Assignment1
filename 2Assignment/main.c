@@ -1,6 +1,7 @@
 
 /* You are not allowed to use <stdio.h> */
 #include "io.h"
+#include "mm.h"
 #include <stdlib.h>
 
 typedef struct value {
@@ -20,9 +21,11 @@ void freeCollection(Collection *collection) {
     while (collection->head != NULL) {
         current = collection->head;
         collection->head = collection->head->next;
-        free(current);
+        //free(current);
+        simple_free(current);
     }
-    free(collection);
+    //free(collection);
+    simple_free(collection);
 }
 
 /**
@@ -37,7 +40,8 @@ void freeCollection(Collection *collection) {
 int main()
 {
     char c;
-    Collection *collection = malloc(sizeof(Collection));
+    //Collection *collection = malloc(sizeof(Collection));
+    Collection *collection = simple_malloc(sizeof(Collection));
     collection->head = NULL;
     collection->tail = NULL;
     collection->count = 0;
@@ -50,7 +54,8 @@ int main()
         {
             case 'a':
                 {
-                    value *newVal = malloc(sizeof(value));
+                    //value *newVal = malloc(sizeof(value));
+                    value *newVal = simple_malloc(sizeof(value));
                     newVal->val = collection->count;
                     newVal->next = NULL;
 
