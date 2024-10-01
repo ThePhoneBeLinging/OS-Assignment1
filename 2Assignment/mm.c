@@ -48,10 +48,10 @@ void simple_init() {
             /* TODO: Place first and last blocks and set links and free flags properly */
             first = (BlockHeader *) aligned_memory_start;
             last = (BlockHeader *) aligned_memory_end;
-            SET_FREE(first, 0);
+            SET_FREE(first, 1);
             SET_NEXT(first, last);
             SET_NEXT(last, first);
-            SET_FREE(last, 0);
+            SET_FREE(last, 1);
             current = first;
             printf("First Memory address: %llu\n", first);
         }
@@ -91,13 +91,13 @@ void *simple_malloc(size_t size) {
                 printf("entered if(SIZE(current)\n");
                 /* Will the remainder be large enough for a new block? */
                 if (SIZE(current) - aligned_size < sizeof(BlockHeader) + MIN_SIZE) {
-                    SET_FREE(current, 1);
+                    SET_FREE(current, 0);
                 } else {
                     BlockHeader *newBlock = (BlockHeader *) ((uintptr_t) current + aligned_size);
                     SET_NEXT(newBlock, current->next);
                     SET_NEXT(current, newBlock);
-                    SET_FREE(current, 1);
-                    SET_FREE(newBlock, 0);
+                    SET_FREE(current, 0);
+                    SET_FREE(newBlock, 1);
                 }
                 void *currentAddress = current + (uintptr_t) sizeof(BlockHeader);
                 printf("Returning Address: %lu", currentAddress);
@@ -137,14 +137,16 @@ void simple_free(void *ptr) {
         return;
     }
     printf("About to BIG NICK crash\n");
-    BlockHeader *temp = block->next;
+    BlockHeader *temp = block;
     printf("Entering while\n");
-    while (temp->next != block) {
+    printf("temp: %lu\n", temp);
+    while (temp->next != 0) {
         printf("temp.next\n");
         temp = temp->next;
+        printf("temp: %lu\n", temp);
     }
     temp->next = block->next;
-    SET_FREE(temp, 0);
+    SET_FREE(temp, 1);
 
     /* TODO: Free block */
 
