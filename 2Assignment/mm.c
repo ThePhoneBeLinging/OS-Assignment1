@@ -10,6 +10,8 @@
 
 #include "mm.h"
 
+#include <stdbool.h>
+
 
 /* Proposed data structure elements */
 
@@ -50,7 +52,8 @@ void simple_init() {
             last = (BlockHeader *) aligned_memory_end;
             SET_FREE(first, 0);
             SET_NEXT(first, last);
-            SET_FREE(last, 1);
+            SET_NEXT(last,first);
+            SET_FREE(last, 0);
             current = first;
         }
     }
@@ -78,8 +81,9 @@ void *simple_malloc(size_t size) {
     /* Search for a free block */
     BlockHeader* startSearch = current;
     do {
-        if (GET_FREE(current)) {
 
+        if (GET_FREE(current))
+        {
             /* Possibly coalesce consecutive free blocks here */
 
             /* Check if free block is large enough */
@@ -103,10 +107,8 @@ void *simple_malloc(size_t size) {
                 return currentAddress;
             }
         }
-
         current = GET_NEXT(current);
     } while (current != startSearch);
-
     /* None found */
     return NULL;
 }
