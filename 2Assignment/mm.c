@@ -45,7 +45,6 @@ void simple_init() {
     if (first == NULL) {
         /* Check that we have room for at least one free block and an end header */
         if (aligned_memory_start + 2 * sizeof(BlockHeader) + MIN_SIZE <= aligned_memory_end) {
-            /* TODO: Place first and last blocks and set links and free flags properly */
             first = (BlockHeader *) aligned_memory_start;
             last = (BlockHeader *) aligned_memory_end;
             SET_FREE(first, 1);
@@ -53,7 +52,6 @@ void simple_init() {
             SET_NEXT(last, first);
             SET_FREE(last, 1);
             current = first;
-            //printf("First Memory address: %llu\n", first);
         }
     }
 }
@@ -73,7 +71,7 @@ void *simple_malloc(size_t size) {
     // Initialize memory system if not already initialized
     if (first == NULL) {
         simple_init();
-        if (first == NULL) return NULL; // Memory initialization failed
+        if (first == NULL) return NULL;
     }
 
     size_t aligned_size = (size + 7) & ~7;

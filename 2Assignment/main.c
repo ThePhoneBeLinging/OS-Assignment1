@@ -21,10 +21,8 @@ void freeCollection(Collection *collection) {
     while (collection->head != NULL) {
         current = collection->head;
         collection->head = collection->head->next;
-        //free(current);
         simple_free(current);
     }
-    //free(collection);
     simple_free(collection);
 }
 
@@ -40,7 +38,6 @@ void freeCollection(Collection *collection) {
 int main()
 {
     char c;
-    //Collection *collection = malloc(sizeof(Collection));
     Collection *collection = simple_malloc(sizeof(Collection));
     collection->head = NULL;
     collection->tail = NULL;
@@ -54,7 +51,6 @@ int main()
         {
             case 'a':
                 {
-                    //value *newVal = malloc(sizeof(value));
                     value *newVal = simple_malloc(sizeof(value));
                     newVal->val = collection->count;
                     newVal->next = NULL;
@@ -79,7 +75,7 @@ int main()
                 {
                     if (collection->tail != NULL) {
                         if (collection->tail == collection->head) {
-                            free(collection->tail);
+                            simple_free(collection->tail);
                             collection->head = NULL;
                             collection->tail = NULL;
                         } else {
