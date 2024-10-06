@@ -86,7 +86,7 @@ int main()
                             value *temp = collection->tail;
                             collection->tail = collection->tail->prev;
                             collection->tail->next = NULL;
-                            free(temp);
+                            simple_free(temp);
                         }
                     }
                     collection->count++;
