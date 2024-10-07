@@ -127,17 +127,14 @@ void simple_free(void *ptr) {
         return;
     }
 
-    BlockHeader* tempBlock = first;
+    SET_FREE(block, 1);
 
-    while (GET_NEXT(tempBlock) != block)
-    {
-        tempBlock = GET_NEXT(tempBlock);
+    BlockHeader *nextBlock = GET_NEXT(block);
+    if (GET_FREE(nextBlock)) {
+        SET_NEXT(block, GET_NEXT(nextBlock));
     }
-    tempBlock->next = GET_NEXT(block);
-    if (current == block)
-    {
-        current = tempBlock;
-    }
+
+    current = first;
 }
 
 /* Include test routines */
