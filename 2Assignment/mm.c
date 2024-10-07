@@ -134,6 +134,10 @@ void simple_free(void *ptr) {
         tempBlock = GET_NEXT(tempBlock);
     }
     tempBlock->next = GET_NEXT(block);
+    if (current == block)
+    {
+        current = tempBlock;
+    }
 }
 
 /* Include test routines */
