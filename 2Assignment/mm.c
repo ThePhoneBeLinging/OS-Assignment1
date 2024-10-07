@@ -127,14 +127,13 @@ void simple_free(void *ptr) {
         return;
     }
 
-    SET_FREE(block, 1);
+    BlockHeader* tempBlock = first;
 
-    BlockHeader *nextBlock = GET_NEXT(block);
-    if (GET_FREE(nextBlock)) {
-        // Merge current block with the next free block
-        SET_NEXT(block, GET_NEXT(nextBlock));
+    while (GET_NEXT(tempBlock) != block)
+    {
+        tempBlock = GET_NEXT(tempBlock);
     }
-
+    tempBlock->next = GET_NEXT(block);
 }
 
 /* Include test routines */
