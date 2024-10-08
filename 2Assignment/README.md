@@ -6,22 +6,18 @@ For Ubuntu:
 ```bash
 sudo apt install check
 ```
-And then:
+
+You can now compile the project:
 ```bash
-sudo apt install pkg-config
+make
 ```
 
-For MacOS:
+From here you can the tests with:
 ```bash
-brew install check
-```
-And then:
-```bash
-brew install pkg-config
+./malloc_check
 ```
 
-
-You can now run the project:
+Or run the program using:
 ```bash
-make run
+./cmd_int
 ```
