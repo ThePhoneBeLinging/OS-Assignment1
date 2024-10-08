@@ -276,6 +276,20 @@ START_TEST (test_memory_exerciser)
 
 END_TEST
 
+
+START_TEST (test_memory_exerciser_withMORETEST)
+{
+    void * ptr1 = MALLOC(10);
+    void * ptr2 = MALLOC(10);
+    uint16_t difference = (uintptr_t)ptr2 - (uintptr_t)ptr1;
+    ck_assert(difference >= 24);
+    uintptr_t oldPtr1 = ptr1;
+    FREE(ptr1);
+    FREE(ptr2);
+    ptr1 = MALLOC(10);
+    ck_assert((uintptr_t)ptr1 == oldPtr1);
+}
+END_TEST
 /**
  * { You may provide more unit tests here, but remember to add them to simple_malloc_suite }
  */
@@ -293,6 +307,7 @@ Suite* simple_malloc_suite()
   tcase_add_test (tc_core, test_simple_allocation);
   tcase_add_test (tc_core, test_simple_unique_addresses);
   tcase_add_test (tc_core, test_memory_exerciser);
+  tcase_add_test (tc_core, test_memory_exerciser_withMORETEST);
 
   suite_add_tcase(s, tc_core);
   return s;
