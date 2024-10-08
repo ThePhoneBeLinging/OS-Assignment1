@@ -283,11 +283,12 @@ START_TEST (test_memory_exerciser_withMORETEST)
     void * ptr2 = MALLOC(10);
     uint16_t difference = (uintptr_t)ptr2 - (uintptr_t)ptr1;
     ck_assert(difference >= 24);
-    uintptr_t oldPtr1 = ptr1;
-    FREE(ptr1);
+    // Its 24 above because 10 is aligning to 16 bytes, and 8 bytes is the size of the Blockheadwer
+    void * ptr3 = MALLOC(10);
     FREE(ptr2);
-    ptr1 = MALLOC(10);
-    ck_assert((uintptr_t)ptr1 == oldPtr1);
+    // To show we are using next fit and not first fit this ptr4 should NAWT be the same as ptr 2
+    void * ptr4 = MALLOC(10);
+    ck_assert(ptr2 != ptr4);
 }
 END_TEST
 /**
