@@ -2,7 +2,6 @@
 /* You are not allowed to use <stdio.h> */
 #include "io.h"
 #include "mm.h"
-#include <stdlib.h>
 
 typedef struct value {
     int val;
